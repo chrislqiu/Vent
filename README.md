@@ -1,6 +1,5 @@
 Capstone Project: Vent
 ===
-## Overview
 ### Description
 This app is a mix of known social media apps BeReal, Instagram, and Yikyak. This application allows the user to vent about something ongoing in their life that is currently bothering, irritating, or annoying them. This is a way for users to let steam off and get things off their chest.
 ### Features
