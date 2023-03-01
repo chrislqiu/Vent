@@ -19,9 +19,8 @@ This app is a mix of known social media apps BeReal, Instagram, and Yikyak. This
         * Angry (red)
         * Tired (purple)
         * Neutral (white)
-        * Excited (orange)
         * Shocked (neon green)
-        * Energized (calm green)
+        * Energized (orange)
 #### Optional
 * User can comment on other people's notes
 * User can change their profile photo
