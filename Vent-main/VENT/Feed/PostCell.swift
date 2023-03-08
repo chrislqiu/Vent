@@ -1,8 +1,5 @@
 //
 //  PostCell.swift
-//  lab-insta-parse
-//
-//  Created by Charlie Hieger on 11/3/22.
 //
 
 import UIKit
@@ -48,6 +45,26 @@ class PostCell: UITableViewCell {
 
         // Caption
         captionLabel.text = post.caption
+        
+        /* shows caption if entered */
+        // TODO: make this so u cant post an empty caption later once firebase is implemented
+          if post.caption == "" {
+                captionLabel.layer.masksToBounds = true
+                captionLabel.layer.cornerRadius = 8
+                captionLabel.backgroundColor = UIColor.init(white: 1, alpha: 0.0)
+            } else {
+                captionLabel.layer.masksToBounds = true
+                captionLabel.layer.cornerRadius = 8
+                captionLabel.backgroundColor = UIColor.purple.withAlphaComponent(0.7)
+            }
+            
+            /* circle */
+            postImageView.layer.borderWidth = 1
+            postImageView.layer.masksToBounds = false
+            postImageView.layer.borderColor = UIColor.black.cgColor
+            postImageView.layer.cornerRadius = postImageView.frame.height/2
+            postImageView.clipsToBounds = true
+            /* circle */
 
         // Date
         if let date = post.createdAt {
