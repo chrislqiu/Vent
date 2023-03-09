@@ -85,3 +85,22 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath)
   return cell
 }
 
+/*
+-Put code in scene delegate
+
+Then:
+-Set the storyboard ID of the Navigation Controller (not the Feed View Controller) in your storyboard to
+“FeedNavigationController” so that it matches the code in line 25.
+*/
+
+func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)
+  {
+    
+  guard let _ = (scene as? UIWindowScene) else {return}
+    
+  if let currentUser = Firebase.Auth.auth().currentUser {
+    print("Signed in as user: \(currentUser.email)")
+    let main = UIStoryboard(name: "Main", bundle: nil)
+    let feedNavigationController = main.instantiateviewController(withIdentifier: "FeedNavigationController")
+    window?.rootViewController = feedNavigationController
+  }
