@@ -11,7 +11,7 @@ Add a configure() method in the PostCell class as follows:
 
 */
 
-func configure(with: post: [String:Any]) {
+func configure(with post: [String:Any]) {
   if let author = post["author"] as? String {
     postAuthorLabel.text = author
   }
