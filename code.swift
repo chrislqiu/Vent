@@ -104,3 +104,30 @@ func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options conn
     let feedNavigationController = main.instantiateviewController(withIdentifier: "FeedNavigationController")
     window?.rootViewController = feedNavigationController
   }
+}   
+ 
+/*
+-Logout button code
+*/
+
+@IBAction func logout(_ sender: Any) {
+  do {
+    try Firebase.Auth.auth().signOut()
+  }
+  catch {
+    print("No user signed in!")
+  }
+  
+  let main = UIStoryboard(name: "Main", bundle: nil)
+  let loginViewController = main.instantiateViewController(withIdentifier: "LoginViewController")
+  guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+    let delegate = windowScene.delegate as? SceneDelegate else { return }
+  
+  delegate.window?.rootViewController = loginViewController
+}
+
+//Set the StoryboardID of your LoginViewController to be “LoginViewController” to match line 122 of the code snippet above.
+
+/*
+
+*/
