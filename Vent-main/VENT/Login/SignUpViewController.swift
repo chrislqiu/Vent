@@ -69,8 +69,68 @@ class SignUpViewController: UIViewController {
             showMissingFieldsAlert()
             return
         }
+// TODO: PROFILE PICTURE TO FIREBASE
+        guard let pfp = signupImage.image?.pngData() else {
+            print("no image data")
+            return
+        }
+        
+        let storageRef = FirebaseStorage.Storage.storage().reference()
+        guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
+            print("can't get current user")
+            return
+        }
+        
+        let fileRef = storageRef.child("\(userUID)/\(Date().timeIntervalSince1970.formatted()).png")
 
-        // TODO: Pt 1 - Parse user sign up
+        let uploadTask = fileRef.putData(pfp, metadata: nil) { metadata, error in
+            guard metadata != nil else {return }
+            if let e = error {
+                print(e.localizedDescription)
+                return
+            }
+            
+            fileRef.downloadURL { URL, error in
+                if let e = error {
+                    print(e.localizedDescription)
+                    return
+                }
+                
+                
+                guard let u = URL else {
+                    print("Unable to get photo url")
+                    return
+                }
+                
+                var post:[String:Any] = [String: Any]()
+               // post["caption"] = self.captionField.text
+                post["image"] = u.absoluteString
+                
+                guard let username = Firebase.Auth.auth().currentUser?.email else {
+                    print("Cannot set author of post")
+                    return
+                }
+                
+                post["author"] = username[..<(username.firstIndex(of: "@") ?? username.endIndex)]
+                post["authorUID"] = "\(userUID)"
+                
+                let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"
+                
+                let db = Firestore.firestore()
+                db.collection("posts").document(postID).setData(post) { error in
+                    if let e = error {
+                        print(e.localizedDescription)
+                        return
+                    }
+                    
+                    print("Post successfully written! :)")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+        /*  end of profile pic code */
+        
+ 
         var newUser = User()
         newUser.username = username
         newUser.email = email
