@@ -1,15 +1,12 @@
-//
-//  PostViewController.swift
-//  lab-insta-parse
-//
 
 import UIKit
+import Firebase
+import FirebaseStorage
 
 // TODO: Pt 1 - Import Photos UI
 import PhotosUI
 
-// TODO: Pt 1 - Import Parse Swift
-import ParseSwift
+
 
 class PostViewController: UIViewController {
 
@@ -53,53 +50,67 @@ class PostViewController: UIViewController {
     @IBAction func onShareTapped(_ sender: Any) {
         // Dismiss Keyboard
         view.endEditing(true)
-
-        // TODO: Pt 1 - Create and save Post
-
-        // Unwrap optional pickedImage
-        guard let image = pickedImage,
-              // Create and compress image data (jpeg) from UIImage
-              let imageData = image.jpegData(compressionQuality: 0.1) else {
+        
+        // TODO: FIREBASE POSTVIEW
+        guard let imageData = previewImageView.image?.pngData() else {
+            print("remember to get rid fo this to replace with pfp later")
             return
         }
-
-        // Create a Parse File by providing a name and passing in the image data
-        let imageFile = ParseFile(name: "image.jpg", data: imageData)
-
-        // Create Post object
-        var post = Post()
-
-        // Set properties
-        post.imageFile = imageFile
-        post.caption = captionTextField.text
-
-        // Set the user as the current user
-        post.user = User.current
-
-        // Save post (async)
-        post.save { [weak self] result in
-
-            // Switch to the main thread for any UI updates
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let post):
-                    print("✅ Post Saved! \(post)")
-
-                    // TODO: Pt 2 - Update user's last posted date
-
-
-                case .failure(let error):
-                    self?.showAlert(description: error.localizedDescription)
+        
+        let storageRef = FirebaseStorage.Storage.storage().reference()
+        guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
+            print("cant get current user")
+            return
+        }
+        
+        let fileRef = storageRef.child("\(userUID)/\(Date().timeIntervalSince1970.formatted()).png")
+        
+        let uploadTask = fileRef.putData(imageData, metadata: nil) {metadata, error in
+            guard metadata != nil else { return }
+            if let e = error {
+                print(e.localizedDescription)
+                return
+            }
+            
+            fileRef.downloadURL { url, error in
+                if let e = error {
+                    print(e.localizedDescription)
+                    return
                 }
+                
+                guard let u = url else {
+                    print("Unable to get photo url")
+                    return
+                }
+                var post:[String:Any] = [String:Any]()
+                post["textpost"] = self.captionTextField.text
+                post["profilepic: "] = u.absoluteString
+                
+                guard let username = Firebase.Auth.auth().currentUser?.email else {
+                    print("cannot set author of post")
+                    return
+                }
+                
+                post["author"] = username[..<(username.firstIndex(of:"@") ?? username.endIndex)]
+                post["authorUID"] = "\(userUID)"
+                
+                let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"
+                
+                let db = Firestore.firestore()
+                db.collection("posts").document(postID).setData(post) { error in
+                    if let e = error {
+                        print(e.localizedDescription)
+                        return
+                    }
+                }
+                print("Post successfully written!")
+                self.navigationController?.popViewController(animated: true)
             }
         }
-    }
-
-    @IBAction func onTakePhotoTapped(_ sender: Any) {
-        // TODO: Pt 2 - Present camera
-
+    
 
     }
+
 
     @IBAction func onViewTapped(_ sender: Any) {
         // Dismiss keyboard

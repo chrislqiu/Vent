@@ -5,7 +5,9 @@
 import UIKit
 
 // TODO: P1 1 - Import Parse Swift
-import ParseSwift
+import Firebase
+import FirebaseStorage
+import FirebaseFirestoreSwift
 
 class FeedViewController: UIViewController {
 
@@ -38,7 +40,7 @@ class FeedViewController: UIViewController {
 
     private func queryPosts(completion: (() -> Void)? = nil) {
         // TODO: Pt 1 - Query Posts
-        // https://github.com/parse-community/Parse-Swift/blob/3d4bb13acd7496a49b259e541928ad493219d363/ParseSwift.playground/Pages/2%20-%20Finding%20Objects.xcplaygroundpage/Contents.swift#L66
+        
 
         // 1. Create a query to fetch Posts
         // 2. Any properties that are Parse objects are stored by reference in Parse DB and as such need to explicitly use `include_:)` to be included in query results.

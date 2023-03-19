@@ -5,6 +5,9 @@
 import UIKit
 import Alamofire
 import AlamofireImage
+import Firebase
+import FirebaseStorage
+import FirebaseFirestoreSwift
 
 class PostCell: UITableViewCell {
 

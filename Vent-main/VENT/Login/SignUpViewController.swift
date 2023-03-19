@@ -5,7 +5,9 @@
 
 import UIKit
 
-import ParseSwift
+import Firebase
+import FirebaseStorage
+import FirebaseFirestoreSwift
 import PhotosUI
 
 
@@ -69,7 +71,7 @@ class SignUpViewController: UIViewController {
             showMissingFieldsAlert()
             return
         }
-// TODO: PROFILE PICTURE TO FIREBASE
+        // TODO: PROFILE PICTURE TO FIREBASE
         guard let pfp = signupImage.image?.pngData() else {
             print("no image data")
             return
@@ -130,25 +132,23 @@ class SignUpViewController: UIViewController {
         }
         /*  end of profile pic code */
         
- 
-        var newUser = User()
-        newUser.username = username
-        newUser.email = email
-        newUser.password = password
-
-        newUser.signup { [weak self] result in
-
-            switch result {
-            case .success(let user):
-
-                print("✅ Successfully signed up user \(user)")
-
-                NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
-
-            case .failure(let error):
-                self?.showAlert(description: error.localizedDescription)
+        Firebase.Auth.auth().createUser(withEmail: username, password: password) { result, error in
+            if let e = error {
+                print(e.localizedDescription)
+                return
             }
+            
+            guard let res = result else {
+                print("Error occurred with signing up!")
+                return
+            }
+            
+            print("Signed up new user as \(res.user.email)")
+            self.performSegue(withIdentifier: "loginSegue", sender: nil)
+    
         }
+
+
     }
 
     private func showMissingFieldsAlert() {

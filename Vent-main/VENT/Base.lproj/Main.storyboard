@@ -60,6 +60,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="onLoginTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DFY-cM-1wp"/>
+                                                    <segue destination="DAh-Kx-zT3" kind="presentation" identifier="loginSegue" modalPresentationStyle="fullScreen" id="QnI-3Z-IP6"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -178,7 +179,7 @@
                                     <action selector="onSignUpTapped:" destination="Hbv-xC-mao" eventType="touchUpInside" id="VtW-cZ-Olf"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Untitled_Artwork 1" translatesAutoresizingMaskIntoConstraints="NO" id="d98-rN-kyb">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Untitled_Artwork 1" translatesAutoresizingMaskIntoConstraints="NO" id="d98-rN-kyb">
                                 <rect key="frame" x="71" y="400.33333333333326" width="248" height="248"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" red="0.67383680260000001" green="0.53689108289999998" blue="0.87517613169999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
