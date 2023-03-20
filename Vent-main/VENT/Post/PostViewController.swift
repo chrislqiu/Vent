@@ -118,7 +118,7 @@ class PostViewController: UIViewController {
     }
 }
 
-// TODO: Pt 1 - Add PHPickerViewController delegate and handle picked image.
+
 extension PostViewController: PHPickerViewControllerDelegate {
 
     // PHPickerViewController required delegate method.

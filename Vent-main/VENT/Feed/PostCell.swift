@@ -7,7 +7,7 @@ import Alamofire
 import AlamofireImage
 import Firebase
 import FirebaseStorage
-import FirebaseFirestoreSwift
+//import FirebaseFirestore
 
 class PostCell: UITableViewCell {
 
@@ -21,37 +21,25 @@ class PostCell: UITableViewCell {
 
     private var imageDataRequest: DataRequest?
 
-    func configure(with post: Post) {
-        // TODO: Pt 1 - Configure Post Cell
-
-        // Username
-        if let user = post.user {
-            usernameLabel.text = user.username
+    func configure(with post: [String:Any]) {
+        
+        if let user = post["author"] as? String {
+          usernameLabel.text = user
         }
-
-        // Image
-        if let imageFile = post.imageFile,
-           let imageUrl = imageFile.url {
-
-            // Use AlamofireImage helper to fetch remote image from URL
-            imageDataRequest = AF.request(imageUrl).responseImage { [weak self] response in
-                switch response.result {
-                case .success(let image):
-                    // Set image view image with fetched image
-                    self?.postImageView.image = image
-                case .failure(let error):
-                    print("❌ Error fetching image: \(error.localizedDescription)")
-                    break
-                }
+        
+        if let caption = post["caption"] as? String {
+          captionLabel.text = caption
+        }
+          
+      if let imageLink = post["image"] as? String,
+            let url = URL(string: imageLink) {
+            postImageView.af.setImage(withURL: url)
             }
-        }
 
-        // Caption
-        captionLabel.text = post.caption
         
         /* shows caption if entered */
         // TODO: make this so u cant post an empty caption later once firebase is implemented
-          if post.caption == "" {
+        if captionLabel.text == "" {
                 captionLabel.layer.masksToBounds = true
                 captionLabel.layer.cornerRadius = 8
                 captionLabel.backgroundColor = UIColor.init(white: 1, alpha: 0.0)
@@ -70,23 +58,17 @@ class PostCell: UITableViewCell {
             /* circle */
 
         // Date
-        if let date = post.createdAt {
-            dateLabel.text = DateFormatter.postFormatter.string(from: date)
+        if let date = post["date"] {
+            dateLabel.text = DateFormatter.postFormatter.string(from: date as! Date)
         }
-
-        // TODO: Pt 2 - Show/hide blur view
-
 
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        // TODO: Pt 1 - Cancel image data request
 
-        // Reset image view image.
         postImageView.image = nil
 
-        // Cancel image request.
         imageDataRequest?.cancel()
     }
 }
