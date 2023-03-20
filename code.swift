@@ -62,7 +62,7 @@ override func viewDidAppear(_ animated: Bool) {
         self.posts.append(document.data())
       }
                                        
-      self.posts.append(document.data())
+      self.postsTableView.reloadData()
   }                                   
 }
 
