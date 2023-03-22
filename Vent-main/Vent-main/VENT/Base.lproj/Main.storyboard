@@ -178,6 +178,7 @@
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="onSignUpTapped:" destination="Hbv-xC-mao" eventType="touchUpInside" id="VtW-cZ-Olf"/>
+                                    <segue destination="DAh-Kx-zT3" kind="presentation" identifier="loginSegue" modalPresentationStyle="fullScreen" id="tM4-8K-DkZ"/>
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Untitled_Artwork 1" translatesAutoresizingMaskIntoConstraints="NO" id="d98-rN-kyb">
@@ -501,6 +502,9 @@
             <point key="canvasLocation" x="1748" y="712"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="tM4-8K-DkZ"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="Untitled_Artwork 1" width="2048" height="2048"/>
         <image name="camera" catalog="system" width="128" height="93"/>

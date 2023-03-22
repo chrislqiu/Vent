@@ -33,7 +33,7 @@ class FeedViewController: UIViewController {
       super.viewDidAppear(animated)
       self.posts.removeAll()
       
-      let postsRef = Firestore.firestore().collection("post")
+      let postsRef = Firestore.firestore().collection("posts")
       postsRef.limit(to: 20).getDocuments { querySnapshot,
           error in
           if let e = error {
