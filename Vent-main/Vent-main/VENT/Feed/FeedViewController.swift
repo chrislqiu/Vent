@@ -99,7 +99,19 @@ class FeedViewController: UIViewController {
     } */
 
     @IBAction func onLogOutTapped(_ sender: Any) {
-        showConfirmLogoutAlert()
+        do {
+          try Firebase.Auth.auth().signOut()
+        }
+        catch {
+          print("No user signed in!")
+        }
+        
+        let main = UIStoryboard(name: "Main", bundle: nil)
+        let loginViewController = main.instantiateViewController(withIdentifier: "LoginViewController")
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let delegate = windowScene.delegate as? SceneDelegate else { return }
+        
+        delegate.window?.rootViewController = loginViewController
     }
 
     @objc private func onPullToRefresh() {
@@ -107,17 +119,6 @@ class FeedViewController: UIViewController {
         /* queryPosts { [weak self] in
             self?.refreshControl.endRefreshing()
         } */
-    }
-
-   private func showConfirmLogoutAlert() {
-      /*  let alertController = UIAlertController(title: "Log out of \(User.current?.username ?? "current account")?", message: nil, preferredStyle: .alert)
-        let logOutAction = UIAlertAction(title: "Log out", style: .destructive) { _ in
-            NotificationCenter.default.post(name: Notification.Name("logout"), object: nil)
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alertController.addAction(logOutAction)
-        alertController.addAction(cancelAction)
-        present(alertController, animated: true) */
     }
 }
 

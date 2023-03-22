@@ -65,9 +65,9 @@ class PostCell: UITableViewCell {
             /* circle */
 
         // Date
-        if let date = post["date"] {
+       /* if let date = post["date"] {
             dateLabel.text = DateFormatter.postFormatter.string(from: date as! Date)
-        }
+        } */
 
     }
 

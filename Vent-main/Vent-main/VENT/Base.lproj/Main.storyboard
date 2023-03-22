@@ -29,8 +29,9 @@
                                                 <color key="textColor" red="0.62907781900499171" green="0.50122859143594289" blue="0.81704337018156414" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fTT-rM-c3u">
+                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fTT-rM-c3u">
                                                 <rect key="frame" x="0.0" y="95.333333333333343" width="342" height="34"/>
+                                                <color key="textColor" red="0.78431367870000002" green="0.78431367870000002" blue="0.79215681550000006" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
@@ -225,7 +226,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1747.6923076923076" y="-2.1327014218009479"/>
+            <point key="canvasLocation" x="1748" y="-2"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="pPO-Vv-xve">
@@ -371,7 +372,7 @@
                         <barButtonItem key="leftBarButtonItem" title="Log Out" id="zMF-65-UDO">
                             <color key="tintColor" red="0.74088532789999995" green="0.46577329519999999" blue="0.9200439453" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <connections>
-                                <action selector="Logout:" destination="1ea-Bq-vMp" id="LCf-lv-kK1"/>
+                                <action selector="onLogOutTapped:" destination="D49-nA-hPQ" id="Xu8-Va-8e9"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="plus.app" catalog="system" id="nbY-mp-bGb">
@@ -386,7 +387,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U0B-Ms-PlK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="1ea-Bq-vMp" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="990.76923076923072" y="711.61137440758296"/>
         </scene>
@@ -395,6 +395,7 @@
             <objects>
                 <navigationController storyboardIdentifier="FeedNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="DAh-Kx-zT3" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="aEB-Fh-Edj"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="CNt-Tn-v14">
                         <rect key="frame" x="0.0" y="47" width="390" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

@@ -60,17 +60,18 @@ class SignUpViewController: UIViewController {
     @IBAction func onSignUpTapped(_ sender: Any) {
         // TODO: add actions to save pfp
         // Make sure all fields are non-nil and non-empty.
-        guard let username = usernameField.text,
-              let email = emailField.text,
+        guard let username = emailField.text,
+              //let email = emailField.text,
               let password = passwordField.text,
               !username.isEmpty,
-              !email.isEmpty,
+              //!email.isEmpty,
               !password.isEmpty else {
 
             showMissingFieldsAlert()
             return
         }
         // TODO: PROFILE PICTURE TO FIREBASE
+        /*
         guard let pfp = signupImage.image?.pngData() else {
             print("no image data")
             return
@@ -128,7 +129,7 @@ class SignUpViewController: UIViewController {
                     self.navigationController?.popViewController(animated: true)
                 }
             }
-        }
+        } */
         /*  end of profile pic code */
         
         Firebase.Auth.auth().createUser(withEmail: username, password: password) { result, error in
