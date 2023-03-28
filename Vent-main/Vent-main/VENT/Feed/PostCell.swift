@@ -21,7 +21,7 @@ class PostCell: UITableViewCell {
 
     private var imageDataRequest: DataRequest?
 
-    func configure(with post: [String:Any], lastPostedAt: Date?) {
+    func configure(with post: [String:Any], lastPostedAt: Date?, profileUrl: String?) {
         
         if let user = post["author"] as? String {
           usernameLabel.text = user
@@ -30,11 +30,13 @@ class PostCell: UITableViewCell {
         if let caption = post["caption"] as? String {
           captionLabel.text = caption
         }
+        
+        postImageView.af.setImage(withURL: URL(string: profileUrl!)!)
           
-      if let imageLink = post["image"] as? String,
+      /*if let imageLink = post["image"] as? String,
             let url = URL(string: imageLink) {
             postImageView.af.setImage(withURL: url)
-            }
+            } */
         
         if let userLastPostedAt = lastPostedAt, let postCreationDate = (post["date"] as? Timestamp)?.dateValue(), let diffHours = Calendar.current.dateComponents([.hour], from: postCreationDate, to: userLastPostedAt).hour {
             blurView.isHidden = abs(diffHours) < 24
@@ -54,7 +56,9 @@ class PostCell: UITableViewCell {
                 captionLabel.layer.masksToBounds = true
                 captionLabel.layer.cornerRadius = 8
                 captionLabel.backgroundColor = UIColor.purple.withAlphaComponent(0.7)
+                
             }
+        
             
             /* circle */
             postImageView.layer.borderWidth = 1

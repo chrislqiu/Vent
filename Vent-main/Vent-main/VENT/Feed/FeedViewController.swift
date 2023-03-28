@@ -16,6 +16,8 @@ class FeedViewController: UIViewController {
     var posts: [[String:Any]] = [[String:Any]]()
     var lastPostedAt: Date? = nil
 
+    //var profileUrl: URL? = nil
+    var profileUrl: String! = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +54,7 @@ class FeedViewController: UIViewController {
  
           self.tableView.reloadData()
       }
+
         guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
             print("cant get the user rn")
             return
@@ -68,35 +71,26 @@ class FeedViewController: UIViewController {
             }
             
         }
+    
+        //TODO: FIX THIS PLEASE ANDERSON
+        let userData2Ref = Firestore.firestore().collection("posts")
+               userDataRef.document(userUID).getDocument { docSnapshot, error in
+                   if let e = error {
+                       print(e.localizedDescription)
+                       return
+                   }
+                   if let doc = docSnapshot, doc.exists, let data = doc.data(), let pfpurl = (data["pfp"] as? String) {
+                       self.profileUrl = pfpurl //URL(string: pfpurl)
+                   }
+               }
         
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        //queryPosts()
     }
 
-   /* private func queryPosts(completion: (() -> Void)? = nil) {
-
-                           
-        let query = Post.query()
-            .include("user")
-            .order([.descending("createdAt")])
-
-        // Find and return posts that meet query criteria (async)
-        query.find { [weak self] result in
-            switch result {
-            case .success(let posts):
-                // Update the local posts property with fetched posts
-                self?.posts = posts
-            case .failure(let error):
-                self?.showAlert(description: error.localizedDescription)
-            }
-
-            completion?()
-        }
-    } */
 
     @IBAction func onLogOutTapped(_ sender: Any) {
         do {
@@ -133,7 +127,7 @@ extension FeedViewController: UITableViewDataSource {
       let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostCell
         
       let post = self.posts[indexPath.row]
-        cell.configure(with: post, lastPostedAt: self.lastPostedAt)
+          cell.configure(with: post, lastPostedAt: self.lastPostedAt, profileUrl: self.profileUrl!)
       return cell
     }
 }
