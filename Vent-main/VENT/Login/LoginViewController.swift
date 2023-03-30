@@ -41,24 +41,8 @@ class LoginViewController: UIViewController {
             
             print("Signed in as \(res.user.email)")
             self.performSegue(withIdentifier: "loginSegue", sender: nil)
-            
         }
-/*
-        // TODO: Pt 1 - Log in the parse user
-        User.login(username: username, password: password) { [weak self] result in
 
-            switch result {
-            case .success(let user):
-                print("✅ Successfully logged in as user: \(user)")
-
-                // Post a notification that the user has successfully logged in.
-                NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
-
-            case .failure(let error):
-                // Show an alert for any errors
-                self?.showAlert(description: error.localizedDescription)
-            }
-        } */
     }
 
     private func showMissingFieldsAlert() {

@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,22 +16,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
 
-        NotificationCenter.default.addObserver(forName: Notification.Name("login"), object: nil, queue: OperationQueue.main) { [weak self] _ in
-            self?.login()
-        }
-
-        NotificationCenter.default.addObserver(forName: Notification.Name("logout"), object: nil, queue: OperationQueue.main) { [weak self] _ in
-            self?.logOut()
-        }
-
-        // TODO: Pt 2 - Check for cached user for persisted log in.
-
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions)
+      {
+        
+      guard let _ = (scene as? UIWindowScene) else {return}
+        
+      if let currentUser = Firebase.Auth.auth().currentUser {
+        print("Signed in as user: \(currentUser.email)")
+        let main = UIStoryboard(name: "Main", bundle: nil)
+        let feedNavigationController = main.instantiateViewController(withIdentifier: "FeedNavigationController")
+        window?.rootViewController = feedNavigationController
+      }
     }
 
     private func login() {
@@ -38,10 +35,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window?.rootViewController = storyboard.instantiateViewController(withIdentifier: Constants.feedNavigationControllerIdentifier)
     }
 
-    private func logOut() {
-        // TODO: Pt 2 - Log out Parse user.
-
+    @IBAction func Logout(_ sender: Any) {
+        do {
+          try Firebase.Auth.auth().signOut()
+        }
+        catch {
+          print("No user signed in!")
+        }
+        
+        let main = UIStoryboard(name: "Main", bundle: nil)
+        let loginViewController = main.instantiateViewController(withIdentifier: "LoginViewController")
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let delegate = windowScene.delegate as? SceneDelegate else { return }
+        
+        delegate.window?.rootViewController = loginViewController
     }
+
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

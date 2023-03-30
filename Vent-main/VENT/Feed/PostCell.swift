@@ -21,20 +21,25 @@ class PostCell: UITableViewCell {
 
     private var imageDataRequest: DataRequest?
 
-    func configure(with post: [String:Any]) {
+    func configure(with post: [String:Any], lastPostedAt: Date?, profileUrl: String?) {
         
         if let user = post["author"] as? String {
           usernameLabel.text = user
         }
         
-        if let caption = post["caption"] as? String {
+        if let caption = post["textpost"] as? String {
           captionLabel.text = caption
         }
-          
-      if let imageLink = post["image"] as? String,
-            let url = URL(string: imageLink) {
-            postImageView.af.setImage(withURL: url)
-            }
+        
+        //print(profileUrl)
+        postImageView.af.setImage(withURL: URL(string: profileUrl!)!)
+ 
+      /*  if let userLastPostedAt = lastPostedAt, let postCreationDate = (post["date"] as? Timestamp)?.dateValue(), let diffHours = Calendar.current.dateComponents([.hour], from: postCreationDate, to: userLastPostedAt).hour {
+            blurView.isHidden = abs(diffHours) < 24
+            print(blurView.isHidden)
+        } else {
+            blurView.isHidden = false
+        } */
 
         
         /* shows caption if entered */
@@ -46,8 +51,31 @@ class PostCell: UITableViewCell {
             } else {
                 captionLabel.layer.masksToBounds = true
                 captionLabel.layer.cornerRadius = 8
-                captionLabel.backgroundColor = UIColor.purple.withAlphaComponent(0.7)
+                captionLabel.backgroundColor = UIColor.white.withAlphaComponent(0.7)
+                
             }
+        
+        if let color = post["color"] as? String {
+            switch (color) {
+            case "yellow":
+                captionLabel.textColor = UIColor.yellow
+            case "orange":
+                captionLabel.textColor = UIColor.orange
+            case "green":
+                captionLabel.textColor = UIColor.green
+            case "cyan":
+                captionLabel.textColor = UIColor.cyan
+            case "blue":
+                captionLabel.textColor = UIColor.blue
+            case "red":
+                captionLabel.textColor = UIColor.red
+            case "purple":
+                captionLabel.textColor = UIColor.purple
+            default:
+                captionLabel.textColor = UIColor.black
+            }
+        }
+        
             
             /* circle */
             postImageView.layer.borderWidth = 1
@@ -58,9 +86,9 @@ class PostCell: UITableViewCell {
             /* circle */
 
         // Date
-        if let date = post["date"] {
+       /* if let date = post["date"] {
             dateLabel.text = DateFormatter.postFormatter.string(from: date as! Date)
-        }
+        } */
 
     }
 
