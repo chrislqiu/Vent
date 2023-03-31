@@ -32,8 +32,8 @@ class PostViewController: UIViewController {
         if sender.tag == 0 {
             color = "yellow"
             currentMoodLabel.text = "Happy"
-            currentMoodLabel.textColor = UIColor.yellow
-            captionTextField.textColor = UIColor.yellow
+            currentMoodLabel.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
+            captionTextField.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
         } else if sender.tag == 1 {
             color = "orange"
             currentMoodLabel.text = "Energized"

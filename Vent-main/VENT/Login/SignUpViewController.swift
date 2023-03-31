@@ -16,6 +16,7 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     private var pickedImage: UIImage?
+    private var imageChanged = false
 
     @IBOutlet weak var signupImage: UIImageView! {
         didSet{
@@ -67,26 +68,27 @@ class SignUpViewController: UIViewController {
               //!email.isEmpty,
               !password.isEmpty else {
 
-            showMissingFieldsAlert()
+            errorPopup(errorTitle: "Oops...", errorMessage: "We need all fields filled out in order to sign you up.")
             return
         }
         
         Firebase.Auth.auth().createUser(withEmail: username, password: password) { result, error in
              if let e = error {
-                 print(e.localizedDescription)
+                 self.errorPopup(errorTitle: "Oops...", errorMessage: "Please enter a valid email. Passwords need to be 6 or more characters.")
                  return
              }
              
              guard let res = result else {
-                 print("Error occurred with signing up!")
+                 self.errorPopup(errorTitle: "Oops...", errorMessage: "Error in signing up")
                  return
              }
             
             // TODO: PROFILE PICTURE TO FIREBASE
-            print("PROFILE PIC UGH")
+            //print("PROFILE PIC UGH")
             
+            // TODO: need to make sure they can't just put click here as pfp
             guard let pfp = self.signupImage.image?.pngData() else {
-                print("no image data")
+                self.errorPopup(errorTitle: "Oops...", errorMessage: "Please select a profile image")
                 return
             }
             
@@ -110,7 +112,6 @@ class SignUpViewController: UIViewController {
                         print(e.localizedDescription)
                         return
                     }
-                    
                     
                     guard let u = URL else {
                         print("Unable to get photo url")
@@ -139,7 +140,6 @@ class SignUpViewController: UIViewController {
                             return
                         }
                         
-                        print("\n\n\n\n image uploaded \n \n \n \n :)")
                         self.navigationController?.popViewController(animated: true)
                     }
                 }
@@ -155,8 +155,15 @@ class SignUpViewController: UIViewController {
 
     }
 
-    private func showMissingFieldsAlert() {
+    /*private func showMissingFieldsAlert() {
         let alertController = UIAlertController(title: "Opps...", message: "We need all fields filled out in order to sign you up.", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(action)
+        present(alertController, animated: true)
+    }*/
+    
+    private func errorPopup(errorTitle: String, errorMessage: String) {
+        let alertController = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default)
         alertController.addAction(action)
         present(alertController, animated: true)
@@ -217,8 +224,7 @@ extension SignUpViewController: PHPickerViewControllerDelegate {
             }
 
 
-            if let error = error {
-
+            if error != nil {
                 return
             } else {
                 DispatchQueue.main.async {

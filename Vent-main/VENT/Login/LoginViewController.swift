@@ -6,18 +6,22 @@ import UIKit
 
 
 import Firebase
+import FirebaseCore
 
 class LoginViewController: UIViewController {
 
     @IBOutlet weak var usernameField: UITextField!
+    @IBOutlet weak var logInError: UILabel!
     @IBOutlet weak var passwordField: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        logInError.text = ""
     }
     
     @IBAction func onLoginTapped(_ sender: Any) {
 
+        self.logInError.text = ""
         // Make sure all fields are non-nil and non-empty.
         guard let username = usernameField.text,
               let password = passwordField.text,
@@ -28,9 +32,11 @@ class LoginViewController: UIViewController {
             return
         }
         
-        Firebase.Auth.auth().signIn(withEmail: username, password: password) { result, error in
+        /*Firebase.Auth.auth().signIn(withEmail: username, password: password) { result, error in
             if let e = error {
+                
                 print(e.localizedDescription)
+                
                 return
             }
             
@@ -41,7 +47,26 @@ class LoginViewController: UIViewController {
             
             print("Signed in as \(res.user.email)")
             self.performSegue(withIdentifier: "loginSegue", sender: nil)
+        }*/
+        
+        Firebase.Auth.auth().signIn(withEmail: username, password: password) { result, error in
+            if error != nil {
+                print("error with username/password")
+                self.logInError.text = "Invalid Username and/or Password"
+                self.logInError.textColor = UIColor.red
+                return
+            }
+            
+            guard result != nil else {
+                print("error with login res")
+                return
+            }
+            
+            self.performSegue(withIdentifier: "loginSegue", sender: nil)
+            
         }
+        
+        
 
     }
 

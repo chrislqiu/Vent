@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="48" translatesAutoresizingMaskIntoConstraints="NO" id="4iE-h0-KKh">
-                                <rect key="frame" x="24" y="159.66666666666666" width="342" height="271.33333333333337"/>
+                                <rect key="frame" x="24" y="143.66666666666666" width="342" height="303.66666666666674"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="dZg-MO-Mf0">
-                                        <rect key="frame" x="0.0" y="0.0" width="342" height="175.33333333333334"/>
+                                    <stackView opaque="NO" contentMode="center" axis="vertical" distribution="equalSpacing" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="dZg-MO-Mf0">
+                                        <rect key="frame" x="0.0" y="0.0" width="342" height="207.66666666666666"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VENT" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XGx-Ld-H6T">
                                                 <rect key="frame" x="0.0" y="0.0" width="342" height="83.333333333333329"/>
@@ -40,10 +40,16 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                             </textField>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username/password issue" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kp3-8X-l0H">
+                                                <rect key="frame" x="0.0" y="187.33333333333334" width="342" height="20.333333333333343"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="z2z-ag-4P1">
-                                        <rect key="frame" x="0.0" y="223.33333333333334" width="342" height="48.000000000000028"/>
+                                        <rect key="frame" x="0.0" y="255.66666666666663" width="342" height="48"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bfO-dy-o7P">
                                                 <rect key="frame" x="0.0" y="0.0" width="342" height="48"/>
@@ -61,7 +67,6 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="onLoginTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DFY-cM-1wp"/>
-                                                    <segue destination="DAh-Kx-zT3" kind="presentation" identifier="loginSegue" modalPresentationStyle="fullScreen" id="QnI-3Z-IP6"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -69,10 +74,10 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Oh3-Iz-IeO">
-                                <rect key="frame" x="70.333333333333329" y="447" width="249.66666666666669" height="34.333333333333314"/>
+                                <rect key="frame" x="70.333333333333329" y="463.33333333333331" width="249.66666666666669" height="34.333333333333314"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Don't have an account?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YAz-Tx-FSv">
-                                        <rect key="frame" x="0.0" y="8.3333333333333144" width="161" height="18"/>
+                                        <rect key="frame" x="0.0" y="8" width="161" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" systemColor="secondaryLabelColor"/>
                                         <nil key="highlightedColor"/>
@@ -104,8 +109,10 @@
                         <barButtonItem key="backBarButtonItem" title=" " id="8UY-v9-SbL"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="logInError" destination="kp3-8X-l0H" id="Bz2-x0-9JC"/>
                         <outlet property="passwordField" destination="nAU-Ud-dn0" id="zTX-IY-xM4"/>
                         <outlet property="usernameField" destination="fTT-rM-c3u" id="SZt-84-h0N"/>
+                        <segue destination="DAh-Kx-zT3" kind="presentation" identifier="loginSegue" modalPresentationStyle="fullScreen" id="MgU-k3-L09"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -571,7 +578,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="QnI-3Z-IP6"/>
+        <segue reference="af0-Io-bA8"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Untitled_Artwork 1" width="2048" height="2048"/>
