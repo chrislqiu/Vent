@@ -27,6 +27,7 @@ class PostViewController: UIViewController {
     private var color: String! = ""
     
     var profileUrl: String! = ""
+    var postUsername: String! = ""
     
     @IBAction func checkMood(_ sender: UIButton) {
         if sender.tag == 0 {
@@ -87,6 +88,7 @@ class PostViewController: UIViewController {
                    }
                    if let doc = docSnapshot, doc.exists, let data = doc.data(), let pfpurl = (data["pfp"] as? String) {
                        self.profileUrl = pfpurl //URL(string: pfpurl)
+                       self.postUsername = data["author"] as? String
                        //self.tableView.reloadData()
                        print("The pfp is \(self.profileUrl)")
                    }
@@ -111,6 +113,8 @@ class PostViewController: UIViewController {
         view.endEditing(true)
         
         
+        
+        
         let storageRef = FirebaseStorage.Storage.storage().reference()
         guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
             print("cant get current user")
@@ -121,12 +125,21 @@ class PostViewController: UIViewController {
         
         let data = Data()
         
+        //print("before upload task :)")
+        
         let uploadTask = fileRef.putData(data, metadata: nil) {metadata, error in
-            guard metadata != nil else { return }
             if let e = error {
                 print(e.localizedDescription)
                 return
             }
+            guard metadata != nil else {
+                //print("meta datapload task start")
+                return }
+            //print("upload task start")
+          /*  if let e = error {
+                print(e.localizedDescription)
+                return
+            } */
             
             fileRef.downloadURL { url, error in
                 if let e = error {
@@ -144,7 +157,7 @@ class PostViewController: UIViewController {
                     return
                 }
                 
-                post["author"] = username[..<(username.firstIndex(of:"@") ?? username.endIndex)]
+                post["author"] = self.postUsername//[..<(username.firstIndex(of:"@") ?? username.endIndex)]
                 post["authorUID"] = "\(userUID)"
                 
                 let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"

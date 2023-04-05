@@ -31,7 +31,6 @@
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fTT-rM-c3u">
                                                 <rect key="frame" x="0.0" y="95.333333333333343" width="342" height="34"/>
-                                                <color key="textColor" red="0.78431367870000002" green="0.78431367870000002" blue="0.79215681550000006" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
@@ -187,8 +186,8 @@
                                     <action selector="onSignUpTapped:" destination="Hbv-xC-mao" eventType="touchUpInside" id="VtW-cZ-Olf"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Untitled_Artwork 1" translatesAutoresizingMaskIntoConstraints="NO" id="d98-rN-kyb">
-                                <rect key="frame" x="71" y="400.33333333333326" width="248" height="248"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="d98-rN-kyb">
+                                <rect key="frame" x="71" y="401.33333333333331" width="248" height="246.66666666666663"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" red="0.67383680260000001" green="0.53689108289999998" blue="0.87517613169999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <gestureRecognizers/>
@@ -374,10 +373,11 @@
                                 <action selector="onLogOutTapped:" destination="D49-nA-hPQ" id="Xu8-Va-8e9"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="plus.app" catalog="system" id="nbY-mp-bGb">
-                            <color key="tintColor" systemColor="labelColor"/>
+                        <barButtonItem key="rightBarButtonItem" image="message.badge" catalog="system" id="nbY-mp-bGb">
+                            <color key="tintColor" red="0.64076416049999996" green="0.41821920439999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             <connections>
-                                <segue destination="3KS-34-J8g" kind="show" id="oL8-b8-bAN"/>
+                                <action selector="postButtonPressed:" destination="D49-nA-hPQ" id="MYa-C7-zOB"/>
+                                <segue destination="3KS-34-J8g" kind="show" identifier="sharePostSegue" id="oL8-b8-bAN"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -581,14 +581,11 @@
         <segue reference="af0-Io-bA8"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="Untitled_Artwork 1" width="2048" height="2048"/>
-        <image name="plus.app" catalog="system" width="128" height="114"/>
+        <image name="message.badge" catalog="system" width="128" height="116"/>
+        <image name="person.circle" catalog="system" width="128" height="123"/>
         <namedColor name="AccentColor">
             <color red="1" green="0.79199999570846558" blue="0.15700000524520874" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <systemColor name="labelColor">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="quaternaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.17647058823529413" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

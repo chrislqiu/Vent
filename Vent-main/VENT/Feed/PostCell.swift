@@ -58,7 +58,7 @@ class PostCell: UITableViewCell {
         if let color = post["color"] as? String {
             switch (color) {
             case "yellow":
-                captionLabel.textColor = UIColor.yellow
+                captionLabel.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
             case "orange":
                 captionLabel.textColor = UIColor.orange
             case "green":

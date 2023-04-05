@@ -61,19 +61,19 @@ class SignUpViewController: UIViewController {
     @IBAction func onSignUpTapped(_ sender: Any) {
         // TODO: add actions to save pfp
         // Make sure all fields are non-nil and non-empty.
-        guard let username = emailField.text,
-              //let email = emailField.text,
+        guard let username = usernameField.text,
+              let email = emailField.text,
               let password = passwordField.text,
               !username.isEmpty,
-              //!email.isEmpty,
+              !email.isEmpty,
               !password.isEmpty else {
 
             errorPopup(errorTitle: "Oops...", errorMessage: "We need all fields filled out in order to sign you up.")
             return
         }
         
-        Firebase.Auth.auth().createUser(withEmail: username, password: password) { result, error in
-             if let e = error {
+        Firebase.Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if error != nil {
                  self.errorPopup(errorTitle: "Oops...", errorMessage: "Please enter a valid email. Passwords need to be 6 or more characters.")
                  return
              }
@@ -123,12 +123,12 @@ class SignUpViewController: UIViewController {
                     post["pfp"] = u.absoluteString
                     print(u.absoluteString)
                     
-                    guard let username = Firebase.Auth.auth().currentUser?.email else {
+                    /*guard let username = Firebase.Auth.auth().currentUser?.email else {
                         print("Cannot set author of post")
                         return
-                    }
+                    }*/
                     
-                    post["author"] = username[..<(username.firstIndex(of: "@") ?? username.endIndex)]
+                    post["author"] = username
                     post["authorUID"] = "\(userUID)"
                     
                     let postID = "\(userUID)"
@@ -145,7 +145,7 @@ class SignUpViewController: UIViewController {
                 }
             }
              
-             print("Signed up new user as \(res.user.email)")
+            print("Signed up new user as \(String(describing: res.user.email))")
             
             
              self.performSegue(withIdentifier: "loginSegue", sender: nil)
