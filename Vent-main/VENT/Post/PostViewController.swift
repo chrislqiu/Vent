@@ -5,6 +5,7 @@ import FirebaseStorage
 
 // TODO: Pt 1 - Import Photos UI
 import PhotosUI
+import SwiftUI
 
 
 
@@ -13,49 +14,106 @@ class PostViewController: UIViewController {
     // MARK: Outlets
     @IBOutlet weak var shareButton: UIBarButtonItem!
     @IBOutlet weak var captionTextField: UITextField!
-    @IBOutlet weak var previewImageView: UIImageView!
-
-    private var pickedImage: UIImage?
-
+    
+    @IBOutlet weak var ShockedButton: UIButton!
+    @IBOutlet weak var SadButton: UIButton!
+    @IBOutlet weak var HappyButton: UIButton!
+    @IBOutlet weak var AngryButton: UIButton!
+    @IBOutlet weak var TiredButton: UIButton!
+    @IBOutlet weak var EnergizedButton: UIButton!
+    @IBOutlet weak var NeutralButton: UIButton!
+    
+    @IBOutlet weak var currentMoodLabel: UILabel!
+    private var color: String! = ""
+    
+    var profileUrl: String! = ""
+    var postUsername: String! = ""
+    
+    @IBAction func checkMood(_ sender: UIButton) {
+        if sender.tag == 0 {
+            color = "yellow"
+            currentMoodLabel.text = "Happy"
+            currentMoodLabel.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
+            captionTextField.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
+        } else if sender.tag == 1 {
+            color = "orange"
+            currentMoodLabel.text = "Energized"
+            currentMoodLabel.textColor = UIColor.orange
+            captionTextField.textColor = UIColor.orange
+        } else if sender.tag == 2 {
+            color = "green"
+            currentMoodLabel.text = "Shocked"
+            currentMoodLabel.textColor = UIColor.green
+            captionTextField.textColor = UIColor.green
+        } else if sender.tag == 3 {
+            color = "cyan"
+            currentMoodLabel.text = "Neutral"
+            currentMoodLabel.textColor = UIColor.cyan
+            captionTextField.textColor = UIColor.cyan
+        } else if sender.tag == 4 {
+            color = "blue"
+            currentMoodLabel.text = "Sad"
+            currentMoodLabel.textColor = UIColor.blue
+            captionTextField.textColor = UIColor.blue
+        } else if sender.tag == 5 {
+            color = "red"
+            currentMoodLabel.text = "Angry"
+            currentMoodLabel.textColor = UIColor.red
+            captionTextField.textColor = UIColor.red
+        } else if sender.tag == 6 {
+            color = "purple"
+            currentMoodLabel.text = "Tired"
+            currentMoodLabel.textColor = UIColor.purple
+            captionTextField.textColor = UIColor.purple
+        } else {
+            print("choose color pls :D D:")
+        }
+        print(color ?? "no color")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //WAIT TO PRESS SHARE
+        guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
+            print("cant get the user rn -feedview issue-")
+            return
+        }
+    
+        let userData2Ref = Firestore.firestore().collection("users")
+               userData2Ref.document(userUID).getDocument { docSnapshot, error in
+                   if let e = error {
+                       print(e.localizedDescription)
+                       return
+                   }
+                   if let doc = docSnapshot, doc.exists, let data = doc.data(), let pfpurl = (data["pfp"] as? String) {
+                       self.profileUrl = pfpurl //URL(string: pfpurl)
+                       self.postUsername = data["author"] as? String
+                       //self.tableView.reloadData()
+                       print("The pfp is \(self.profileUrl)")
+                   }
+               }
     }
 
     @IBAction func onPickedImageTapped(_ sender: UIBarButtonItem) {
-        // TODO: Pt 1 - Present Image picker
-        // Create and configure PHPickerViewController
 
-        // Create a configuration object
         var config = PHPickerConfiguration()
 
-        // Set the filter to only show images as options (i.e. no videos, etc.).
         config.filter = .images
 
-        // Request the original file format. Fastest method as it avoids transcoding.
         config.preferredAssetRepresentationMode = .current
 
-        // Only allow 1 image to be selected at a time.
         config.selectionLimit = 1
-
-        // Instantiate a picker, passing in the configuration.
         let picker = PHPickerViewController(configuration: config)
 
-        // Set the picker delegate so we can receive whatever image the user picks.
-        picker.delegate = self
-
-        // Present the picker
         present(picker, animated: true)
     }
 
     @IBAction func onShareTapped(_ sender: Any) {
-        // Dismiss Keyboard
         view.endEditing(true)
         
-        // TODO: FIREBASE POSTVIEW
-        guard let imageData = previewImageView.image?.pngData() else {
-            print("remember to get rid fo this to replace with pfp later")
-            return
-        }
+        
+        
         
         let storageRef = FirebaseStorage.Storage.storage().reference()
         guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
@@ -65,12 +123,23 @@ class PostViewController: UIViewController {
         
         let fileRef = storageRef.child("\(userUID)/\(Date().timeIntervalSince1970.formatted()).png")
         
-        let uploadTask = fileRef.putData(imageData, metadata: nil) {metadata, error in
-            guard metadata != nil else { return }
+        let data = Data()
+        
+        //print("before upload task :)")
+        
+        let uploadTask = fileRef.putData(data, metadata: nil) {metadata, error in
             if let e = error {
                 print(e.localizedDescription)
                 return
             }
+            guard metadata != nil else {
+                //print("meta datapload task start")
+                return }
+            //print("upload task start")
+          /*  if let e = error {
+                print(e.localizedDescription)
+                return
+            } */
             
             fileRef.downloadURL { url, error in
                 if let e = error {
@@ -78,33 +147,37 @@ class PostViewController: UIViewController {
                     return
                 }
                 
-                guard let u = url else {
-                    print("Unable to get photo url")
-                    return
-                }
                 var post:[String:Any] = [String:Any]()
                 post["textpost"] = self.captionTextField.text
-                post["profilepic: "] = u.absoluteString
+                post["date"] = FieldValue.serverTimestamp()
+                post["color"] = self.color
                 
                 guard let username = Firebase.Auth.auth().currentUser?.email else {
                     print("cannot set author of post")
                     return
                 }
                 
-                post["author"] = username[..<(username.firstIndex(of:"@") ?? username.endIndex)]
+                post["author"] = self.postUsername//[..<(username.firstIndex(of:"@") ?? username.endIndex)]
                 post["authorUID"] = "\(userUID)"
                 
                 let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"
                 
+                post["pfp"] = self.profileUrl
+         
                 let db = Firestore.firestore()
                 db.collection("posts").document(postID).setData(post) { error in
                     if let e = error {
                         print(e.localizedDescription)
                         return
                     }
+                    print("Post success!")
+                    db.collection("user_data").document(userUID).setData([ "postdate": FieldValue.serverTimestamp() ]) { e in
+                        if let e = error {
+                            print(e.localizedDescription)
+                        }
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
-                print("Post successfully written!")
-                self.navigationController?.popViewController(animated: true)
             }
         }
     
@@ -119,47 +192,6 @@ class PostViewController: UIViewController {
 }
 
 
-extension PostViewController: PHPickerViewControllerDelegate {
 
-    // PHPickerViewController required delegate method.
-    // Returns PHPicker result containing picked image data.
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-
-        // Dismiss the picker
-        picker.dismiss(animated: true)
-
-        // Make sure we have a non-nil item provider
-        guard let provider = results.first?.itemProvider,
-              // Make sure the provider can load a UIImage
-              provider.canLoadObject(ofClass: UIImage.self) else { return }
-
-        // Load a UIImage from the provider
-        provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
-
-            // Make sure we can cast the returned object to a UIImage
-            guard let image = object as? UIImage else {
-                self?.showAlert()
-                return
-            }
-
-            // Check for and handle any errors
-            if let error = error {
-                self?.showAlert(description: error.localizedDescription)
-                return
-            } else {
-
-                // UI updates (like setting image on image view) should be done on main thread
-                DispatchQueue.main.async {
-
-                    // Set image on preview image view
-                    self?.previewImageView.image = image
-
-                    // Set image to use when saving post
-                    self?.pickedImage = image
-                }
-            }
-        }
-    }
-}
 
 // TODO: Pt 2 - Add UIImagePickerControllerDelegate + UINavigationControllerDelegate
