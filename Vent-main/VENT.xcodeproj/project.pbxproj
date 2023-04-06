@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01624FEA29C917DF0071C929 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01624FE929C917DE0071C929 /* GoogleService-Info.plist */; };
 		CB13E51F2913A16C008F45BB /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB13E51E2913A16C008F45BB /* PostCell.swift */; };
 		CB13E5212913B10B008F45BB /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB13E5202913B10B008F45BB /* DateFormatter+Extensions.swift */; };
 		CB69974E2910F705007EDA6B /* Filmotype-Jade.otf in Resources */ = {isa = PBXBuildFile; fileRef = CB69974C2910F704007EDA6B /* Filmotype-Jade.otf */; };
@@ -23,7 +24,6 @@
 		CB7896FF29371C4900635932 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7896FE29371C4900635932 /* Post.swift */; };
 		CBCDFAFE291144DA001F1CF1 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBCDFAFD291144DA001F1CF1 /* PostViewController.swift */; };
 		CBE72850293741370005CA57 /* ViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE7284F293741370005CA57 /* ViewController+Extensions.swift */; };
-		F2DE988C29B94FA1006DB0C2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2DE988B29B94FA1006DB0C2 /* GoogleService-Info.plist */; };
 		F2DE988F29B9506A006DB0C2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F2DE988E29B9506A006DB0C2 /* FirebaseAnalytics */; };
 		F2DE989129B9506A006DB0C2 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F2DE989029B9506A006DB0C2 /* FirebaseAuth */; };
 		F2DE989329B9506A006DB0C2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F2DE989229B9506A006DB0C2 /* FirebaseFirestore */; };
@@ -31,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01624FE929C917DE0071C929 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CB13E51E2913A16C008F45BB /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		CB13E5202913B10B008F45BB /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
 		CB69974C2910F704007EDA6B /* Filmotype-Jade.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Filmotype-Jade.otf"; sourceTree = "<group>"; };
@@ -48,7 +49,6 @@
 		CB7896FE29371C4900635932 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		CBCDFAFD291144DA001F1CF1 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		CBE7284F293741370005CA57 /* ViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Extensions.swift"; sourceTree = "<group>"; };
-		F2DE988B29B94FA1006DB0C2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +139,7 @@
 				CB73D39A290E3B4A00C12538 /* Main.storyboard */,
 				CB73D39D290E3B4C00C12538 /* Assets.xcassets */,
 				CB73D39F290E3B4C00C12538 /* LaunchScreen.storyboard */,
-				F2DE988B29B94FA1006DB0C2 /* GoogleService-Info.plist */,
+				01624FE929C917DE0071C929 /* GoogleService-Info.plist */,
 				CB73D3A2290E3B4C00C12538 /* Info.plist */,
 				CB6997472910E7E3007EDA6B /* Fonts */,
 			);
@@ -227,9 +227,9 @@
 			files = (
 				CB73D3A1290E3B4C00C12538 /* LaunchScreen.storyboard in Resources */,
 				CB73D39E290E3B4C00C12538 /* Assets.xcassets in Resources */,
-				F2DE988C29B94FA1006DB0C2 /* GoogleService-Info.plist in Resources */,
 				CB69974E2910F705007EDA6B /* Filmotype-Jade.otf in Resources */,
 				CB73D39C290E3B4A00C12538 /* Main.storyboard in Resources */,
+				01624FEA29C917DF0071C929 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

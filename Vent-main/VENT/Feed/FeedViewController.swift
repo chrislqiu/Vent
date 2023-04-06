@@ -4,10 +4,8 @@
 
 import UIKit
 
-// TODO: P1 1 - Import Parse Swift
 import Firebase
 import FirebaseStorage
-import FirebaseFirestoreSwift
 
 class FeedViewController: UIViewController {
 
@@ -16,7 +14,10 @@ class FeedViewController: UIViewController {
     
     // Posts variable
     var posts: [[String:Any]] = [[String:Any]]()
+    var lastPostedAt: Date? = nil
 
+    //var profileUrl: URL? = nil
+    var profileUrl: String! = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,40 +51,61 @@ class FeedViewController: UIViewController {
           for document in results.documents {
             self.posts.append(document.data())
           }
-                                        
+ 
           self.tableView.reloadData()
       }
+
+        guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
+            print("cant get the user rn")
+            return
+        }
+        let userDataRef = Firestore.firestore().collection("user_data")
+        userDataRef.document(userUID).getDocument { docSnapshot, error in
+            if let e = error {
+                print(e.localizedDescription)
+                return
+            }
+            if let doc = docSnapshot, doc.exists, let data = doc.data(), let asDate = (data["postdate"] as? Timestamp)?.dateValue() {
+                self.lastPostedAt = asDate
+                print(self.lastPostedAt)
+            }
+            
+        }
+    
+        //TODO: FIX THIS PLEASE ANDERSON
+        let userData2Ref = Firestore.firestore().collection("posts")
+               userDataRef.document(userUID).getDocument { docSnapshot, error in
+                   if let e = error {
+                       print(e.localizedDescription)
+                       return
+                   }
+                   if let doc = docSnapshot, doc.exists, let data = doc.data(), let pfpurl = (data["pfp"] as? String) {
+                       self.profileUrl = pfpurl //URL(string: pfpurl)
+                   }
+               }
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        //queryPosts()
     }
 
-   /* private func queryPosts(completion: (() -> Void)? = nil) {
-
-                           
-        let query = Post.query()
-            .include("user")
-            .order([.descending("createdAt")])
-
-        // Find and return posts that meet query criteria (async)
-        query.find { [weak self] result in
-            switch result {
-            case .success(let posts):
-                // Update the local posts property with fetched posts
-                self?.posts = posts
-            case .failure(let error):
-                self?.showAlert(description: error.localizedDescription)
-            }
-
-            completion?()
-        }
-    } */
 
     @IBAction func onLogOutTapped(_ sender: Any) {
-        showConfirmLogoutAlert()
+        do {
+          try Firebase.Auth.auth().signOut()
+        }
+        catch {
+          print("No user signed in!")
+        }
+        
+        let main = UIStoryboard(name: "Main", bundle: nil)
+        let loginViewController = main.instantiateViewController(withIdentifier: "LoginViewController")
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let delegate = windowScene.delegate as? SceneDelegate else { return }
+        
+        delegate.window?.rootViewController = loginViewController
     }
 
     @objc private func onPullToRefresh() {
@@ -91,17 +113,6 @@ class FeedViewController: UIViewController {
         /* queryPosts { [weak self] in
             self?.refreshControl.endRefreshing()
         } */
-    }
-
-    private func showConfirmLogoutAlert() {
-        let alertController = UIAlertController(title: "Log out of \(User.current?.username ?? "current account")?", message: nil, preferredStyle: .alert)
-        let logOutAction = UIAlertAction(title: "Log out", style: .destructive) { _ in
-            NotificationCenter.default.post(name: Notification.Name("logout"), object: nil)
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alertController.addAction(logOutAction)
-        alertController.addAction(cancelAction)
-        present(alertController, animated: true)
     }
 }
 
@@ -116,7 +127,7 @@ extension FeedViewController: UITableViewDataSource {
       let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostCell
         
       let post = self.posts[indexPath.row]
-      cell.configure(with: post)
+          cell.configure(with: post, lastPostedAt: self.lastPostedAt, profileUrl: self.profileUrl!)
       return cell
     }
 }

@@ -13,10 +13,30 @@ class PostViewController: UIViewController {
     // MARK: Outlets
     @IBOutlet weak var shareButton: UIBarButtonItem!
     @IBOutlet weak var captionTextField: UITextField!
-    @IBOutlet weak var previewImageView: UIImageView!
-
-    private var pickedImage: UIImage?
-
+    
+    private var color: String! = ""
+    
+    @IBAction func checkMood(_ sender: UIButton) {
+        if sender.tag == 0 {
+            color = "yellow"
+        } else if sender.tag == 1 {
+            color = "orange"
+        } else if sender.tag == 2 {
+            color = "green"
+        } else if sender.tag == 3 {
+            color = "cyan"
+        } else if sender.tag == 4 {
+            color = "blue"
+        } else if sender.tag == 5 {
+            color = "red"
+        } else if sender.tag == 6 {
+            color = "purple"
+        } else {
+            print("choose color pls :D D:")
+        }
+        print(color ?? "no color")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -41,7 +61,6 @@ class PostViewController: UIViewController {
         let picker = PHPickerViewController(configuration: config)
 
         // Set the picker delegate so we can receive whatever image the user picks.
-        picker.delegate = self
 
         // Present the picker
         present(picker, animated: true)
@@ -51,11 +70,6 @@ class PostViewController: UIViewController {
         // Dismiss Keyboard
         view.endEditing(true)
         
-        // TODO: FIREBASE POSTVIEW
-        guard let imageData = previewImageView.image?.pngData() else {
-            print("remember to get rid fo this to replace with pfp later")
-            return
-        }
         
         let storageRef = FirebaseStorage.Storage.storage().reference()
         guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
@@ -65,7 +79,9 @@ class PostViewController: UIViewController {
         
         let fileRef = storageRef.child("\(userUID)/\(Date().timeIntervalSince1970.formatted()).png")
         
-        let uploadTask = fileRef.putData(imageData, metadata: nil) {metadata, error in
+        let data = Data()
+        
+        let uploadTask = fileRef.putData(data, metadata: nil) {metadata, error in
             guard metadata != nil else { return }
             if let e = error {
                 print(e.localizedDescription)
@@ -78,13 +94,10 @@ class PostViewController: UIViewController {
                     return
                 }
                 
-                guard let u = url else {
-                    print("Unable to get photo url")
-                    return
-                }
                 var post:[String:Any] = [String:Any]()
                 post["textpost"] = self.captionTextField.text
-                post["profilepic: "] = u.absoluteString
+                post["date"] = FieldValue.serverTimestamp()
+                post["color"] = self.color
                 
                 guard let username = Firebase.Auth.auth().currentUser?.email else {
                     print("cannot set author of post")
@@ -102,9 +115,14 @@ class PostViewController: UIViewController {
                         print(e.localizedDescription)
                         return
                     }
+                    print("Post success!")
+                    db.collection("user_data").document(userUID).setData([ "postdate": FieldValue.serverTimestamp() ]) { e in
+                        if let e = error {
+                            print(e.localizedDescription)
+                        }
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
-                print("Post successfully written!")
-                self.navigationController?.popViewController(animated: true)
             }
         }
     
@@ -119,47 +137,6 @@ class PostViewController: UIViewController {
 }
 
 
-extension PostViewController: PHPickerViewControllerDelegate {
 
-    // PHPickerViewController required delegate method.
-    // Returns PHPicker result containing picked image data.
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-
-        // Dismiss the picker
-        picker.dismiss(animated: true)
-
-        // Make sure we have a non-nil item provider
-        guard let provider = results.first?.itemProvider,
-              // Make sure the provider can load a UIImage
-              provider.canLoadObject(ofClass: UIImage.self) else { return }
-
-        // Load a UIImage from the provider
-        provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
-
-            // Make sure we can cast the returned object to a UIImage
-            guard let image = object as? UIImage else {
-                self?.showAlert()
-                return
-            }
-
-            // Check for and handle any errors
-            if let error = error {
-                self?.showAlert(description: error.localizedDescription)
-                return
-            } else {
-
-                // UI updates (like setting image on image view) should be done on main thread
-                DispatchQueue.main.async {
-
-                    // Set image on preview image view
-                    self?.previewImageView.image = image
-
-                    // Set image to use when saving post
-                    self?.pickedImage = image
-                }
-            }
-        }
-    }
-}
 
 // TODO: Pt 2 - Add UIImagePickerControllerDelegate + UINavigationControllerDelegate

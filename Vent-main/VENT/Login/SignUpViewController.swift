@@ -7,7 +7,6 @@ import UIKit
 
 import Firebase
 import FirebaseStorage
-import FirebaseFirestoreSwift
 import PhotosUI
 
 
@@ -61,93 +60,97 @@ class SignUpViewController: UIViewController {
     @IBAction func onSignUpTapped(_ sender: Any) {
         // TODO: add actions to save pfp
         // Make sure all fields are non-nil and non-empty.
-        guard let username = usernameField.text,
-              let email = emailField.text,
+        guard let username = emailField.text,
+              //let email = emailField.text,
               let password = passwordField.text,
               !username.isEmpty,
-              !email.isEmpty,
+              //!email.isEmpty,
               !password.isEmpty else {
 
             showMissingFieldsAlert()
             return
         }
-        // TODO: PROFILE PICTURE TO FIREBASE
-        guard let pfp = signupImage.image?.pngData() else {
-            print("no image data")
-            return
-        }
         
-        let storageRef = FirebaseStorage.Storage.storage().reference()
-        guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
-            print("can't get current user")
-            return
-        }
-        
-        let fileRef = storageRef.child("\(userUID)/\(Date().timeIntervalSince1970.formatted()).png")
-
-        let uploadTask = fileRef.putData(pfp, metadata: nil) { metadata, error in
-            guard metadata != nil else {return }
-            if let e = error {
-                print(e.localizedDescription)
+        Firebase.Auth.auth().createUser(withEmail: username, password: password) { result, error in
+             if let e = error {
+                 print(e.localizedDescription)
+                 return
+             }
+             
+             guard let res = result else {
+                 print("Error occurred with signing up!")
+                 return
+             }
+            
+            // TODO: PROFILE PICTURE TO FIREBASE
+            print("here")
+            
+            guard let pfp = self.signupImage.image?.pngData() else {
+                print("no image data")
                 return
             }
             
-            fileRef.downloadURL { URL, error in
+            let storageRef = FirebaseStorage.Storage.storage().reference()
+            guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
+                print("can't get current user")
+                return
+            }
+            
+            let fileRef = storageRef.child("\(userUID)/\(Date().timeIntervalSince1970.formatted()).png")
+
+            let uploadTask = fileRef.putData(pfp, metadata: nil) { metadata, error in
+                guard metadata != nil else {return }
                 if let e = error {
                     print(e.localizedDescription)
                     return
                 }
                 
-                
-                guard let u = URL else {
-                    print("Unable to get photo url")
-                    return
-                }
-                
-                var post:[String:Any] = [String: Any]()
-               // post["caption"] = self.captionField.text
-                post["image"] = u.absoluteString
-                
-                guard let username = Firebase.Auth.auth().currentUser?.email else {
-                    print("Cannot set author of post")
-                    return
-                }
-                
-                post["author"] = username[..<(username.firstIndex(of: "@") ?? username.endIndex)]
-                post["authorUID"] = "\(userUID)"
-                
-                let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"
-                
-                let db = Firestore.firestore()
-                db.collection("posts").document(postID).setData(post) { error in
+                fileRef.downloadURL { URL, error in
                     if let e = error {
                         print(e.localizedDescription)
                         return
                     }
                     
-                    print("Post successfully written! :)")
-                    self.navigationController?.popViewController(animated: true)
+                    
+                    guard let u = URL else {
+                        print("Unable to get photo url")
+                        return
+                    }
+                    
+                    var post:[String:Any] = [String: Any]()
+                   // post["caption"] = self.captionField.text
+                    post["image"] = u.absoluteString
+                    
+                    guard let username = Firebase.Auth.auth().currentUser?.email else {
+                        print("Cannot set author of post")
+                        return
+                    }
+                    
+                    post["author"] = username[..<(username.firstIndex(of: "@") ?? username.endIndex)]
+                    post["authorUID"] = "\(userUID)"
+                    
+                    let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"
+                    
+                    let db = Firestore.firestore()
+                    db.collection("posts").document(postID).setData(post) { error in
+                        if let e = error {
+                            print(e.localizedDescription)
+                            return
+                        }
+                        
+                        print("Post successfully written! :)")
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
             }
-        }
-        /*  end of profile pic code */
+             
+             print("Signed up new user as \(res.user.email)")
+            
+            
+             self.performSegue(withIdentifier: "loginSegue", sender: nil)
+     
+         }
         
-        Firebase.Auth.auth().createUser(withEmail: username, password: password) { result, error in
-            if let e = error {
-                print(e.localizedDescription)
-                return
-            }
-            
-            guard let res = result else {
-                print("Error occurred with signing up!")
-                return
-            }
-            
-            print("Signed up new user as \(res.user.email)")
-            self.performSegue(withIdentifier: "loginSegue", sender: nil)
-    
-        }
-
 
     }
 
