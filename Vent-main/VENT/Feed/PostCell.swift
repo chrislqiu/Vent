@@ -27,23 +27,19 @@ class PostCell: UITableViewCell {
           usernameLabel.text = user
         }
         
-        if let caption = post["caption"] as? String {
+        if let caption = post["textpost"] as? String {
           captionLabel.text = caption
         }
         
+        //print(profileUrl)
         postImageView.af.setImage(withURL: URL(string: profileUrl!)!)
-          
-      /*if let imageLink = post["image"] as? String,
-            let url = URL(string: imageLink) {
-            postImageView.af.setImage(withURL: url)
-            } */
-        
-        if let userLastPostedAt = lastPostedAt, let postCreationDate = (post["date"] as? Timestamp)?.dateValue(), let diffHours = Calendar.current.dateComponents([.hour], from: postCreationDate, to: userLastPostedAt).hour {
+ 
+      /*  if let userLastPostedAt = lastPostedAt, let postCreationDate = (post["date"] as? Timestamp)?.dateValue(), let diffHours = Calendar.current.dateComponents([.hour], from: postCreationDate, to: userLastPostedAt).hour {
             blurView.isHidden = abs(diffHours) < 24
             print(blurView.isHidden)
         } else {
             blurView.isHidden = false
-        }
+        } */
 
         
         /* shows caption if entered */
@@ -55,9 +51,30 @@ class PostCell: UITableViewCell {
             } else {
                 captionLabel.layer.masksToBounds = true
                 captionLabel.layer.cornerRadius = 8
-                captionLabel.backgroundColor = UIColor.purple.withAlphaComponent(0.7)
+                captionLabel.backgroundColor = UIColor.white.withAlphaComponent(0.7)
                 
             }
+        
+        if let color = post["color"] as? String {
+            switch (color) {
+            case "yellow":
+                captionLabel.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
+            case "orange":
+                captionLabel.textColor = UIColor.orange
+            case "green":
+                captionLabel.textColor = UIColor.green
+            case "cyan":
+                captionLabel.textColor = UIColor.cyan
+            case "blue":
+                captionLabel.textColor = UIColor.blue
+            case "red":
+                captionLabel.textColor = UIColor.red
+            case "purple":
+                captionLabel.textColor = UIColor.purple
+            default:
+                captionLabel.textColor = UIColor.black
+            }
+        }
         
             
             /* circle */

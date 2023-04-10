@@ -5,6 +5,7 @@ import FirebaseStorage
 
 // TODO: Pt 1 - Import Photos UI
 import PhotosUI
+import SwiftUI
 
 
 
@@ -13,24 +14,58 @@ class PostViewController: UIViewController {
     // MARK: Outlets
     @IBOutlet weak var shareButton: UIBarButtonItem!
     @IBOutlet weak var captionTextField: UITextField!
+    @IBOutlet weak var sharebuttonREAL: UIButton!
     
+    @IBOutlet weak var ShockedButton: UIButton!
+    @IBOutlet weak var SadButton: UIButton!
+    @IBOutlet weak var HappyButton: UIButton!
+    @IBOutlet weak var AngryButton: UIButton!
+    @IBOutlet weak var TiredButton: UIButton!
+    @IBOutlet weak var EnergizedButton: UIButton!
+    @IBOutlet weak var NeutralButton: UIButton!
+    
+    @IBOutlet weak var currentMoodLabel: UILabel!
     private var color: String! = ""
+    
+    var profileUrl: String! = ""
+    var postUsername: String! = ""
     
     @IBAction func checkMood(_ sender: UIButton) {
         if sender.tag == 0 {
             color = "yellow"
+            currentMoodLabel.text = "Happy"
+            currentMoodLabel.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
+            captionTextField.textColor = UIColor(red:247/255, green: 203/255, blue:80/255, alpha:1)
         } else if sender.tag == 1 {
             color = "orange"
+            currentMoodLabel.text = "Energized"
+            currentMoodLabel.textColor = UIColor.orange
+            captionTextField.textColor = UIColor.orange
         } else if sender.tag == 2 {
             color = "green"
+            currentMoodLabel.text = "Shocked"
+            currentMoodLabel.textColor = UIColor.green
+            captionTextField.textColor = UIColor.green
         } else if sender.tag == 3 {
             color = "cyan"
+            currentMoodLabel.text = "Neutral"
+            currentMoodLabel.textColor = UIColor.cyan
+            captionTextField.textColor = UIColor.cyan
         } else if sender.tag == 4 {
             color = "blue"
+            currentMoodLabel.text = "Sad"
+            currentMoodLabel.textColor = UIColor.blue
+            captionTextField.textColor = UIColor.blue
         } else if sender.tag == 5 {
             color = "red"
+            currentMoodLabel.text = "Angry"
+            currentMoodLabel.textColor = UIColor.red
+            captionTextField.textColor = UIColor.red
         } else if sender.tag == 6 {
             color = "purple"
+            currentMoodLabel.text = "Tired"
+            currentMoodLabel.textColor = UIColor.purple
+            captionTextField.textColor = UIColor.purple
         } else {
             print("choose color pls :D D:")
         }
@@ -39,36 +74,46 @@ class PostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //WAIT TO PRESS SHARE
+        guard let userUID = Firebase.Auth.auth().currentUser?.uid else {
+            print("cant get the user rn -feedview issue-")
+            return
+        }
+    
+        let userData2Ref = Firestore.firestore().collection("users")
+               userData2Ref.document(userUID).getDocument { docSnapshot, error in
+                   if let e = error {
+                       print(e.localizedDescription)
+                       return
+                   }
+                   if let doc = docSnapshot, doc.exists, let data = doc.data(), let pfpurl = (data["pfp"] as? String) {
+                       self.profileUrl = pfpurl //URL(string: pfpurl)
+                       self.postUsername = data["author"] as? String
+                       //self.tableView.reloadData()
+                       print("The pfp is \(self.profileUrl)")
+                   }
+               }
     }
 
     @IBAction func onPickedImageTapped(_ sender: UIBarButtonItem) {
-        // TODO: Pt 1 - Present Image picker
-        // Create and configure PHPickerViewController
 
-        // Create a configuration object
         var config = PHPickerConfiguration()
 
-        // Set the filter to only show images as options (i.e. no videos, etc.).
         config.filter = .images
 
-        // Request the original file format. Fastest method as it avoids transcoding.
         config.preferredAssetRepresentationMode = .current
 
-        // Only allow 1 image to be selected at a time.
         config.selectionLimit = 1
-
-        // Instantiate a picker, passing in the configuration.
         let picker = PHPickerViewController(configuration: config)
 
-        // Set the picker delegate so we can receive whatever image the user picks.
-
-        // Present the picker
         present(picker, animated: true)
     }
 
     @IBAction func onShareTapped(_ sender: Any) {
-        // Dismiss Keyboard
         view.endEditing(true)
+        
+        
         
         
         let storageRef = FirebaseStorage.Storage.storage().reference()
@@ -81,12 +126,21 @@ class PostViewController: UIViewController {
         
         let data = Data()
         
+        //print("before upload task :)")
+        
         let uploadTask = fileRef.putData(data, metadata: nil) {metadata, error in
-            guard metadata != nil else { return }
             if let e = error {
                 print(e.localizedDescription)
                 return
             }
+            guard metadata != nil else {
+                //print("meta datapload task start")
+                return }
+            //print("upload task start")
+          /*  if let e = error {
+                print(e.localizedDescription)
+                return
+            } */
             
             fileRef.downloadURL { url, error in
                 if let e = error {
@@ -104,11 +158,13 @@ class PostViewController: UIViewController {
                     return
                 }
                 
-                post["author"] = username[..<(username.firstIndex(of:"@") ?? username.endIndex)]
+                post["author"] = self.postUsername//[..<(username.firstIndex(of:"@") ?? username.endIndex)]
                 post["authorUID"] = "\(userUID)"
                 
                 let postID = "\(userUID)-post\(Date().timeIntervalSince1970.formatted())"
                 
+                post["pfp"] = self.profileUrl
+         
                 let db = Firestore.firestore()
                 db.collection("posts").document(postID).setData(post) { error in
                     if let e = error {
@@ -121,6 +177,7 @@ class PostViewController: UIViewController {
                             print(e.localizedDescription)
                         }
                         self.navigationController?.popViewController(animated: true)
+                        self.performSegue(withIdentifier: "returnSegue", sender: self)
                     }
                 }
             }
